@@ -1,7 +1,6 @@
 package com.sena.barberspa.controller;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,8 +41,22 @@ public class homeUserController {
 	// Metodo que mapea la vista de usuario en la raiz del proyecto
 	@GetMapping("")
 	public String home(Model model) {
-		model.addAttribute("productos", productoService.findAll());
 		return "usuario/home";
+	}
+	@GetMapping("/mantenimiento")
+	public String mantenimiento(Model model) {
+		return "usuario/mantenimiento";
+	}
+	
+	
+	@GetMapping("/productosVista")
+	public String productosVista(Model model) {
+		model.addAttribute("productos", productoService.findAll());
+		return "usuario/productosVista";
+	}
+	@GetMapping("/serviciosVista")
+	public String serviciosVista(Model model) {
+		return "usuario/serviciosVista";
 	}
 
 	// Metodo que carga el producto de usuario con el id

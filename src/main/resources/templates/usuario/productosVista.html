@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmins:th="https://thymeLeaf.org">
+
+<head th:insert="~{usuario/template_user.html::head}"> </head>
+
+<body class="index-page">
+
+	<div th:insert="~{usuario/template_user.html::header}" th:if="${sesion == null}"></div>
+	<div th:insert="~{usuario/template_user.html::usuarioCabecera}" th:unless="${sesion == null}"></div>
+
+	<section><!--Buscador--></section>
+
+	<main class="main">
+		<!-- Page Title -->
+		<div class="page-title light-background">
+			<div class="container">
+				<h1>Productos</h1>
+				<nav class="breadcrumbs">
+					<ol>
+						<li><a th:href="@{/}">Inicio</a></li>
+						<li class="current">Productos</li>
+					</ol>
+				</nav>
+			</div>
+		</div><!-- End Page Title -->
+		<div class="container py-5">
+			<div class="row g-4 justify-content-center">
+				<div class="col-lg-3 col-md-6" th:each="producto: ${productos}">
+					<div class="card h-100 shadow-sm border-0">
+						<img class="card-img-top rounded-top" th:src="@{/images/{img} (img=${producto.imagen})}"
+							th:alt="${producto.nombreproducto}">
+						<div class="card-body text-center">
+							<h5 class="card-title fw-bold" th:text="${producto.nombreproducto}"></h5>
+						</div>
+						<div class="card-footer bg-transparent border-0 text-center">
+							<a th:href="@{/productoHome/{id} (id=${producto.id})}" class="btn btn-danger px-4 py-2">Ver
+								Producto</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</main>
+
+	<div th:insert="~{usuario/template_user.html::footer}"></div>
+	<!-- Scroll Top -->
+	<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+			class="bi bi-arrow-up-short"></i></a>
+
+	<!-- Preloader -->
+	<div id="preloader"></div>
+
+	<div th:insert="~{usuario/template_user.html::jsFiles}">
+
+	</div>
+
+</body>
+
+</html>

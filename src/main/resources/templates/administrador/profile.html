@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeLeaf.org">
+
+<head th:insert="~{administrador/template_admin.html::head}"></head>
+
+<body>
+
+	<!-- ======= Header ======= -->
+	<div th:insert="~{administrador/template_admin.html::header}"></div>
+	<!-- ======= End Header ======= -->
+
+	<main id="main" class="main">
+
+
+		<div class="pagetitle">
+			<h1>Perfil</h1>
+			<nav>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a th:href="@{/administrador}">Home</a></li>
+					<li class="breadcrumb-item active">Profile</li>
+				</ol>
+			</nav>
+		</div><!-- End Page Title -->
+
+		<section class="section profile">
+			<div class="row">
+				<div class="col-xl-4">
+
+					<div class="card">
+						<div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+
+							<img th:src="@{/assetsADMIN/img/Rody.jpeg}" alt="Profile" class="rounded-circle">
+							<h2>Rody Avila</h2>
+							<h3>Lider Proyecto BarberMusic&Spa</h3>
+							<div class="social-links mt-2">
+								<a href="https://www.facebook.com/Rod545" class="facebook"><i
+										class="bi bi-facebook"></i></a>
+								<a href="https://www.instagram.com/irody_avila/" class="instagram"><i
+										class="bi bi-instagram"></i></a>
+								<a href="https://www.linkedin.com/in/rody-avila-ab137a314/" class="linkedin"><i
+										class="bi bi-linkedin"></i></a>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="col-xl-8">
+
+					<div class="card">
+						<div class="card-body pt-3">
+							<!-- Bordered Tabs -->
+							<ul class="nav nav-tabs nav-tabs-bordered">
+
+								<li class="nav-item">
+									<button class="nav-link active" data-bs-toggle="tab"
+										data-bs-target="#profile-overview">Vista previa</button>
+								</li>
+
+							</ul>
+
+							<div class="tab-pane fade show active profile-overview" id="profile-overview">
+								<h5 class="card-title">Sobre</h5>
+								<p class="small fst-italic">Lider de BarberMusic&Spa</p>
+
+								<h5 class="card-title">Detalles Perfil</h5>
+
+								<div class="row">
+									<div class="col-lg-3 col-md-4 label ">Nombre Completo</div>
+									<div class="col-lg-9 col-md-8">Rody Esteban Avila Bohorquez</div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-3 col-md-4 label">Grupo</div>
+									<div class="col-lg-9 col-md-8">Grupo 5, BarberMusic&Spa</div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-3 col-md-4 label">Trabajo</div>
+									<div class="col-lg-9 col-md-8">Marketing Digital</div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-3 col-md-4 label">Pais</div>
+									<div class="col-lg-9 col-md-8">Colombia</div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-3 col-md-4 label">Direccion</div>
+									<div class="col-lg-9 col-md-8">Duitama</div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-3 col-md-4 label">Celular</div>
+									<div class="col-lg-9 col-md-8">311 648 4961</div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-3 col-md-4 label">Email</div>
+									<div class="col-lg-9 col-md-8">rody_avila@soy.sena.edu.co</div>
+								</div>
+
+							</div>
+
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</section>
+
+
+	</main><!-- End #main -->
+
+	<div th:insert="~{administrador/template_admin.html::footer}"></div>
+
+	<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+			class="bi bi-arrow-up-short"></i></a>
+
+	<div th:insert="~{administrador/template_admin.html::jsFiles}"></div>
+
+</body>
+
+</html>

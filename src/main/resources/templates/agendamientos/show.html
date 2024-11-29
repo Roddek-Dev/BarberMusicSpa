@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeLeaf.org">
+
+<head th:insert="~{administrador/template_admin.html::head}"></head>
+
+<body>
+
+	<!-- ======= Header ======= -->
+	<div th:insert="~{administrador/template_admin.html::header}"></div>
+	<!-- ======= End Header ======= -->
+
+	<main id="main" class="main">
+
+		<div class="pagetitle">
+			<h1>Agendamientos</h1>
+			<nav>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a th:href="@{../administrador}">Home</a></li>
+					<li class="breadcrumb-item"><a th:href="@{/agendamientos}">Agendamientos</a></li>
+					<li class="breadcrumb-item active">Lista de Agendamientos</li>
+				</ol>
+			</nav>
+		</div><!-- End Page Title -->
+
+		<section class="section dashboard">
+			<div class="row">
+				<div class="col-lg-12">
+
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title">Lista de agendamientos</h5>
+
+							<!-- Table with stripped rows -->
+							<table class="table datatable">
+								<thead>
+									<tr>
+										<th scope="col">Fecha y hora</th>
+										<th scope="col">Estado</th>
+										<th scope="col">Sucursal</th>
+										<th scope="col">Servicio</th>
+										<th scope="col">Usuario</th>
+										<th scope="col">Acción</th>
+										<th scope="col">Acción</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="agendamiento:${agendamientos}">
+										<td th:text="${agendamiento.fechaHora}"></td>
+										<td th:text="${agendamiento.estado}"></td>
+										<td th:text="${agendamiento.usuario}"></td>
+										<td th:text="${agendamiento.servicio}"></td>
+										<td th:text="${agendamiento.sucursal}"></td>
+										</td>
+										<td><a class="btn btn-warning"
+												th:href="@{agendamientos/edit/{id} (id=${agendamiento.id})}">Editar</a>
+										</td>
+										<td><a class="btn btn-danger"
+												th:href="@{agendamientos/delete/{id} (id=${agendamiento.id})}">Eliminar<a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- End Table with stripped rows -->
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</section>
+
+	</main><!-- End #main -->
+
+	<div th:insert="~{administrador/template_admin.html::footer}"></div>
+
+	<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+			class="bi bi-arrow-up-short"></i></a>
+
+	<div th:insert="~{administrador/template_admin.html::jsFiles}"></div>
+
+</body>
+
+</html>

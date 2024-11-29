@@ -1,14 +1,13 @@
 <head th:fragments="head">
 	<meta charset="utf-8">
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-	<title>Spring JPA eCommerce</title>
+	<title>BarberMusic&Spa</title>
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 
 	<!-- Favicons -->
-	<link th:href="@{assets/img/favicon.png}" rel="icon">
-	<link th:href="@{assets/img/apple-touch-icon.png}" rel="apple-touch-icon">
+	<link th:href="@{/assets/img/LogoMusic.png}" rel="icon">
+	<link th:href="@{/assets/img/apple-touch-icon.png}" rel="apple-touch-icon">
 
 	<!-- Fonts -->
 	<link href="https://fonts.googleapis.com" rel="preconnect">
@@ -18,39 +17,51 @@
 		rel="stylesheet">
 
 	<!-- Vendor CSS Files -->
-	<link th:href="@{assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-	<link th:href="@{assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
-	<link th:href="@{assets/vendor/aos/aos.css}" rel="stylesheet">
-	<link th:href="@{assets/vendor/glightbox/css/glightbox.min.css}" rel="stylesheet">
-	<link th:href="@{assets/vendor/swiper/swiper-bundle.min.css}" rel="stylesheet">
+	<link th:href="@{/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+	<link th:href="@{/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
+	<link th:href="@{/assets/vendor/aos/aos.css}" rel="stylesheet">
+	<link th:href="@{/assets/vendor/glightbox/css/glightbox.min.css}" rel="stylesheet">
+	<link th:href="@{/assets/vendor/swiper/swiper-bundle.min.css}" rel="stylesheet">
 
 	<!-- Main CSS File -->
-	<link th:href="@{assets/css/main.css}" rel="stylesheet">
-
-	<!-- =======================================================
-  * Template Name: Yummy
-  * Template URL: https://bootstrapmade.com/yummy-bootstrap-restaurant-website-template/
-  * Updated: Aug 07 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+	<link th:href="@{/assets/css/main.css}" rel="stylesheet">
 </head>
 
-
-<div th:fragment="header" class="header d-flex align-items-center sticky-top">
-	<div class="container position-relative d-flex align-items-center justify-content-between">
-
-		<a href="@{/}" class="logo d-flex align-items-center me-auto me-xl-0">
-			<!-- Uncomment the line below if you also wish to use an image logo -->
-			<!-- <img src="assets/img/logo.png" alt=""> -->
-			<h1 class="sitename">eCommerce</h1>
-			<span>.</span>
+<div th:fragment="header" class="header d-flex align-items-center fixed-top">
+	<div
+		class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+		<a th:href="@{/}" class="logo d-flex align-items-center me-auto me-xl-0">
+			<img th:src="@{/assets/img/LogoMusic.png}" alt="">
+			<h1 class="sitename">BarberMusic&Spa</h1>
 		</a>
 
 		<nav id="navmenu" class="navmenu">
 			<ul>
-				<li><a th:href="@{/}" class="active">Home User<br></a></li>
-				<li><a href="#about">Usuario no logeado</a></li>
+				<li><a href="/#hero" class="active">Inicio</a></li>
+				<li><a href="/#about">Informacion</a></li>
+				<li><a href="/#services">Servicios</a></li>
+				<li><a href="/#productos">Productos</a></li>
+				<li><a href="/#contacto">Agenda tu cita</a></li>
+				<li><a th:href="@{/mantenimiento}">Carrito <i class="bi bi-cart"></i></a></li>
+			</ul>
+			<i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+		</nav>
+
+		<a class="btn-getstarted" th:href="@{/administrador}">Admin <i class="bi bi-box-arrow-in-right"></i></a>
+	</div>
+</div>
+
+
+<div th:fragment="usuarioCabecera" class="header d-flex align-items-center sticky-top">
+	<div class="container position-relative d-flex align-items-center justify-content-between">
+		<a href="@{/}" class="logo d-flex align-items-center me-auto me-xl-0">
+			<h1 class="sitename">BarberMusic&Spa</h1>
+		</a>
+
+		<nav id="navmenu" class="navmenu">
+			<ul>
+				<li><a th:href="@{/}" class="active">Home User</a></li>
+				<li><a href="#about">Usuario Logeado</a></li>
 				<li><a th:href="@{/}">Productos</a></li>
 				<li class="dropdown"><a href="#"><span>Menu desplegable</span> <i
 							class="bi bi-chevron-down toggle-dropdown"></i></a>
@@ -71,117 +82,60 @@
 			<i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
 		</nav>
 
-		<a class="btn-getstarted" th:href="@{/usuario/login}">Login <i class="bi bi-box-arrow-in-right"></i></a>
-
-	</div>
-</div>
-
-
-<div th:fragment="usuarioCabecera" class="header d-flex align-items-center sticky-top">
-	<div class="container position-relative d-flex align-items-center justify-content-between">
-
-		<a href="@{/}" class="logo d-flex align-items-center me-auto me-xl-0">
-			<!-- Uncomment the line below if you also wish to use an image logo -->
-			<!-- <img src="assets/img/logo.png" alt=""> -->
-			<h1 class="sitename">eCommerce</h1>
-			<span>.</span>
-		</a>
-
-		<nav id="navmenu" class="navmenu">
-			<ul>
-				<li><a th:href="@{/}" class="active">Home User<br></a></li>
-				<li><a href="#about">Usuario logeado!!!</a></li>
-				<li><a th:href="@{/}">Productos</a></li>
-				<li class="dropdown"><a href="#"><span>Menu desplegable</span> <i
-							class="bi bi-chevron-down toggle-dropdown"></i></a>
-					<ul>
-						<li><a href="#">Productos</a></li>
-						<li class="dropdown"><a href="#"><span>Opciones Producto</span> <i
-									class="bi bi-chevron-down toggle-dropdown"></i></a>
-							<ul>
-								<li><a href="#">Crear producto</a></li>
-								<li><a href="#">Actualizar Producto</a></li>
-							</ul>
-						</li>
-						<li><a th:href="@{/usuario/compras}">compras</a></li>
-					</ul>
-				</li>
-				<li><a href="@{/getCart}">Carrito <i class="bi bi-cart"></i></a></li>
-			</ul>
-			<i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-		</nav>
-
-		<a class="btn-getstarted" th:href="@{/usuario/cerrar}">Close <i class="bi bi-box-arrow-in-right"></i></a>
-
+		<a class="btn-getstarted" th:href="@{/}">Cerrar sesion <i class="bi bi-box-arrow-in-right"></i></a>
 	</div>
 </div>
 
 <div th:fragment="footer">
-	<footer id="footer" class="footer dark-background">
-
-		<div class="container">
+	<footer id="footer" class="footer">
+		<div class="container footer-top">
 			<div class="row gy-3">
 				<div class="col-lg-3 col-md-6 d-flex">
 					<i class="bi bi-geo-alt icon"></i>
 					<div class="address">
-						<h4>Address</h4>
-						<p>A108 Adam Street</p>
-						<p>New York, NY 535022</p>
-						<p></p>
+						<h4>Integrantes BarberMusic&Spa</h4>
+						<p>Rody Avila </p>
+						<p>Daniel Ortiz </p>
+						<p>Carlos Rodriguez </p>
+						<p>Daniel Gomez </p>
 					</div>
-
 				</div>
 
 				<div class="col-lg-3 col-md-6 d-flex">
 					<i class="bi bi-telephone icon"></i>
 					<div>
-						<h4>Contact</h4>
-						<p>
-							<strong>Phone:</strong> <span>+1 5589 55488 55</span><br>
-							<strong>Email:</strong> <span>info@example.com</span><br>
-						</p>
+						<h4>Tecnologo</h4>
+						<p><strong>ADSO:</strong> <span>2848170</span><br>
+												</p>
 					</div>
 				</div>
 
 				<div class="col-lg-3 col-md-6 d-flex">
 					<i class="bi bi-clock icon"></i>
 					<div>
-						<h4>Opening Hours</h4>
-						<p>
-							<strong>Mon-Sat:</strong> <span>11AM - 23PM</span><br>
-							<strong>Sunday</strong>: <span>Closed</span>
+						<h4>Detalles Prototipo</h4>
+						<p><strong>Elaborado en: </strong> <span>Java Spring</span><br>
+							<strong>Version: </strong> <span>1.0</span>
 						</p>
 					</div>
 				</div>
 
 				<div class="col-lg-3 col-md-6">
-					<h4>Follow Us</h4>
-					<div class="social-links d-flex">
-						<a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
-						<a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-						<a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-						<a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
-					</div>
+					<img th:src="@{/assets/img/LogoBarberMusicSpa.png}" style="width: 150px;" >
 				</div>
-
 			</div>
 		</div>
 
 		<div class="container copyright text-center mt-4">
-			<p>© <span>Copyright</span> <strong class="px-1 sitename">Yummy(eCommerce)</strong> <span>All Rights
-					Reserved</span>
+			<p>© <span>Copyright</span> <strong class="px-1 sitename">iLanding</strong> <span>All Rights Reserved</span>
 			</p>
 			<div class="credits">
-				<!-- All the links in the footer should remain intact. -->
-				<!-- You can delete the links only if you've purchased the pro version. -->
-				<!-- Licensing information: https://bootstrapmade.com/license/ -->
-				<!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-				Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+				Designed by <a href="https://bootstrapmade.com/" style="color: crimson;">BootstrapMade</a>
 			</div>
 		</div>
-
 	</footer>
 </div>
+
 <div th:fragment="jsFiles">
 	<!-- Vendor JS Files -->
 	<script th:src="@{/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
@@ -194,7 +148,3 @@
 	<!-- Main JS File -->
 	<script th:src="@{assets/js/main.js}"></script>
 </div>
-
-
-
-

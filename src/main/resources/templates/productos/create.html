@@ -8,7 +8,7 @@
 	<!-- ======= Header ======= -->
 	<div th:insert="~{administrador/template_admin.html::header}"></div>
 	<!-- ======= End Header ======= -->
-   
+
 	<main id="main" class="main">
 
 		<div class="pagetitle">
@@ -24,65 +24,63 @@
 
 		<section class="section dashboard">
 			<div class="card">
-			            <div class="card-body">
-			              <h5 class="card-title">Crear Producto</h5>
+				<div class="card-body">
+					<h5 class="card-title">Crear Producto</h5>
 
-			              <!-- General Form Elements -->
-			              <form th:action="@{/productos/save}" method="post" enctype="multipart/form-data">
-			                <div class="row mb-3">
-			                  <label for="inputText" class="col-sm-2 col-form-label">Nombre: </label>
-			                  <div class="col-sm-10">
-			                    <input type="text" class="form-control"
-								id="nombreproducto" name ="nombreproducto" 
-								placeholder="Ingrese el nombre del producto"
-								autocomplete="off" required> 
-			                  </div>
-			                </div>
-							
-							<div class="row mb-3">
-							 <label for="inputText" class="col-sm-2 col-form-label">Descripción: </label>
-							 <div class="col-sm-10">
-							   <input type="text" class="form-control" id="descripcion" name="descripcion"
-							   placeholder="Ingrese la descripcion producto" autocomplete="off" required> 
-							 </div>
+					<!-- General Form Elements -->
+					<form th:action="@{/productos/save}" method="post" enctype="multipart/form-data">
+						<div class="row mb-3">
+							<label for="inputText" class="col-sm-2 col-form-label">Nombre: </label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" id="nombreproducto" name="nombreproducto"
+									placeholder="Ingrese el nombre del producto" autocomplete="off" required>
 							</div>
-							
+						</div>
 
-			                <div class="row mb-3">
-			                  <label for="inputNumber" class="col-sm-2 col-form-label">Cantidad:</label>
-			                  <div class="col-sm-10">
-			                    <input type="number" class="form-control" id="cantidad" name="cantidad" 
-								   placeholder="Ingrese la cantidad del  producto" autocomplete="off" required>
-			                  </div>
-			                </div>
-							
-			                <div class="row mb-3">
-			                  <label for="inputNumber" class="col-sm-2 col-form-label">Precio: </label>
-			                  <div class="col-sm-10">
-			                    <input class="form-control" type="number" id="precio" name="precio"
-								    placeholder="Ingrese el precio del producto" autocomplete="off" required>
-			                  </div>
-			                </div>
-							
-							<div class="row mb-3">
-							  <label for="inputNumber" class="col-sm-2 col-form-label">Imagen: </label>
-							  <p>(Dimensiones: 500x500 formato: jpg o png)</p>
-							  <div class="col-sm-10">
+						<div class="row mb-3">
+							<label for="inputText" class="col-sm-2 col-form-label">Descripción: </label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" id="descripcion" name="descripcion"
+									placeholder="Ingrese la descripcion producto" autocomplete="off" required>
+							</div>
+						</div>
+
+
+						<div class="row mb-3">
+							<label for="inputNumber" class="col-sm-2 col-form-label">Cantidad:</label>
+							<div class="col-sm-10">
+								<input type="number" class="form-control" id="cantidad" name="cantidad"
+									placeholder="Ingrese la cantidad del  producto" autocomplete="off" required>
+							</div>
+						</div>
+
+						<div class="row mb-3">
+							<label for="inputNumber" class="col-sm-2 col-form-label">Precio: </label>
+							<div class="col-sm-10">
+								<input class="form-control" type="number" id="precio" name="precio"
+									placeholder="Ingrese el precio del producto" autocomplete="off" required>
+							</div>
+						</div>
+
+						<div class="row mb-3">
+							<label for="inputNumber" class="col-sm-2 col-form-label">Imagen: </label>
+							<p>(Dimensiones: 500x500 formato: jpg o png)</p>
+							<div class="col-sm-10">
 								<input class="form-control" type="file" id="img" name="img">
-							 </div>
-						   </div>
+							</div>
+						</div>
 
-			                <div class="row mb-3">
-			                  <label class="col-sm-2 col-form-label">Guardar cambios:</label>
-			                  <div class="col-sm-10">
-			                    <button type="submit" class="btn btn-success">Guardar</button>
-			                  </div>
-			                </div>
+						<div class="row mb-3">
+							<label class="col-sm-2 col-form-label">Guardar cambios:</label>
+							<div class="col-sm-10">
+								<button type="submit" class="btn btn-success">Guardar</button>
+							</div>
+						</div>
 
-			              </form><!-- End General Form Elements -->
+					</form><!-- End General Form Elements -->
 
-			            </div>
-			          </div>
+				</div>
+			</div>
 		</section>
 
 	</main><!-- End #main -->
