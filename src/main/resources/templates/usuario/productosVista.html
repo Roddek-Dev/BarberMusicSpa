@@ -8,8 +8,6 @@
 	<div th:insert="~{usuario/template_user.html::header}" th:if="${sesion == null}"></div>
 	<div th:insert="~{usuario/template_user.html::usuarioCabecera}" th:unless="${sesion == null}"></div>
 
-	<section><!--Buscador--></section>
-
 	<main class="main">
 		<!-- Page Title -->
 		<div class="page-title light-background">
@@ -22,6 +20,9 @@
 					</ol>
 				</nav>
 			</div>
+			<section>
+				<div class="container" th:insert="~{usuario/template_user.html::search}"></div>
+			</section>
 		</div><!-- End Page Title -->
 		<div class="container py-5">
 			<div class="row g-4 justify-content-center">

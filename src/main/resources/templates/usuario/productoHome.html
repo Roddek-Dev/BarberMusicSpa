@@ -7,69 +7,103 @@
 		margin-top: 3em;
 	}
 </style>
+
 <body class="index-page">
 
-  <!-- Header -->
-  <div th:insert="~{usuario/template_user.html::header}" th:if="${sesion == null}"></div>
-  <div th:insert="~{usuario/template_user.html::usuarioCabecera}" th:unless="${sesion == null}"></div>
+	<!-- Header -->
+	<div th:insert="~{usuario/template_user.html::header}" th:if="${sesion == null}"></div>
+	<div th:insert="~{usuario/template_user.html::usuarioCabecera}" th:unless="${sesion == null}"></div>
 
-  <!-- Main Content -->
-  <main id="main" class="py-5">
-    <div class="container">
-      <h1 class="mt-4 mb-3"><small>Producto</small></h1>
+	<!-- Main Content -->
+	<main id="main" class="py-5">
+		<div class="container">
+			<h1 class="mt-4 mb-3"><small>Producto</small></h1>
 
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-        <li class="breadcrumb-item active">Producto</li>
-      </ol>
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+				<li class="breadcrumb-item active">Producto</li>
+			</ol>
 
-      <div class="card mb-4 shadow-sm border-0">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-lg-6">
-              <a href="#">
-                <img class="img-fluid rounded" th:src="@{/images/{img} (img=${producto.imagen})}" th:alt="${producto.nombreproducto}">
-              </a>
-            </div>
-            <div class="col-lg-6">
-              <form th:action="@{/cart}" method="post">
-                <input type="hidden" th:value="${producto.id}" name="id">
-                <h2 class="card-title fw-bold" th:text="${producto.nombreproducto}"></h2>
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item">
-                    <h5 th:text="'Precio: ' + ${#strings.concat('$', #numbers.formatDecimal(producto.precio, 0, 'POINT', 0, 'POINT'))}"></h5>
-                  </li>
-                  <li class="list-group-item">
-                    <p th:text="'Descripción: ' + ${producto.descripcion}"></p>
-                  </li>
-                  <li class="list-group-item">
-                    <h6>
-                      Cantidad: <input type="number" id="cantidad" name="cantidad" autocomplete="off" min="1" th:max="${producto.cantidad}" value="1" class="form-control d-inline w-auto">
-                    </h6>
-                  </li>
-                </ul>
-                <button type="submit" class="btn btn-dark mt-3">Añadir al carrito</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+			<div class="card mb-4 shadow-sm border-0">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-lg-6">
+							<a href="#">
+								<img class="img-fluid rounded" th:src="@{/images/{img} (img=${producto.imagen})}"
+									th:alt="${producto.nombreproducto}">
+							</a>
+						</div>
+						<div th:if="${sesion == null}" class="col-lg-6">
+							<form th:action="@{/cart}" method="post">
+								<input type="hidden" th:value="${producto.id}" name="id">
+								<h2 class="card-title" th:text="${producto.nombreproducto}"></h2>
+								<ul class="list-group">
+									<li class="list-group-item">
+										<h5
+											th:text="'Precio: ' + ${#strings.concat('$', #numbers.formatDecimal(producto.precio, 0, 'POINT',0, 'POINT'))}">
+										</h5>
+									</li>
+									<li class="list-group-item">
+										<p th:text="'Descripcion: ' + ${producto.descripcion}"></p>
+									</li>
+									<li class="list-group-item">
+										<h6>
+											Cantidad: <input type="number" id="cantidad" name="cantidad"
+												autocomplete="off" min="1" th:max="${producto.cantidad}" value="1">
+										</h6>
+									</li>
+								</ul>
+								<a th:href="@{/usuario/login}"> <button type="button" class="btn btn-dark">Añadir al
+										carrito</button></a>
 
-  <!-- Footer -->
-  <div th:insert="~{usuario/template_user.html::footer}"></div>
+							</form>
+						</div>
 
-  <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
-    <i class="bi bi-arrow-up-short"></i>
-  </a>
+						<div th:unless="${sesion == null}" class="col-lg-6">
+							<form th:action="@{/cart}" method="post">
+								<input type="hidden" th:value="${producto.id}" name="id">
+								<h2 class="card-title" th:text="${producto.nombreproducto}"></h2>
+								<ul class="list-group">
+									<li class="list-group-item">
+										<h5
+											th:text="'Precio: ' + ${#strings.concat('$', #numbers.formatDecimal(producto.precio, 0, 'POINT',0, 'POINT'))}">
+										</h5>
+									</li>
+									<li class="list-group-item">
+										<p th:text="'Descripcion: ' + ${producto.descripcion}"></p>
+									</li>
+									<li class="list-group-item">
+										<h6>
+											Cantidad: <input type="number" id="cantidad" name="cantidad"
+												autocomplete="off" min="1" th:max="${producto.cantidad}" value="1">
+										</h6>
+									</li>
+								</ul>
+								<button type="submit" class="btn btn-dark">Añadir al carrito</button>
 
-  <!-- Preloader -->
-  <div id="preloader"></div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+	</main>
 
-  <!-- JavaScript Files -->
-  <div th:insert="~{usuario/template_user.html::jsFiles}"></div>
+	<!-- Footer -->
+	<div th:insert="~{usuario/template_user.html::footer}"></div>
+
+	<!-- Scroll Top -->
+	<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+		<i class="bi bi-arrow-up-short"></i>
+	</a>
+
+	<!-- Preloader -->
+	<div id="preloader"></div>
+
+	<!-- JavaScript Files -->
+	<div th:insert="~{usuario/template_user.html::jsFiles}"></div>
 
 </body>
+
 </html>

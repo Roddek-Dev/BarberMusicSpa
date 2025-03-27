@@ -1,80 +1,146 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeLeaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:insert="~{administrador/template_admin.html::head}"></head>
+<head th:replace="~{administrador/template_admins.html::head}">
+    <title>Editar Agendamiento | BarberMusic Admin</title>
+</head>
 
 <body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div th:replace="~{administrador/template_admins.html::aside}"></div>
 
-	<!-- ======= Header ======= -->
-	<div th:insert="~{administrador/template_admin.html::header}"></div>
-	<!-- ======= End Header ======= -->
+        <!-- Main Content -->
+        <main class="edit-agendamiento-main">
+            <!-- Encabezado -->
+            <div class="page-header">
+                <h1>
+                    <span class="material-icons-sharp">edit_calendar</span>
+                    Editar Agendamiento
+                </h1>
+                <nav class="breadcrumbs">
+                    <a th:href="@{/administrador}">Inicio</a>
+                    <span class="material-icons-sharp">chevron_right</span>
+                    <a th:href="@{/agendamientos}">Agendamientos</a>
+                    <span class="material-icons-sharp">chevron_right</span>
+                    <span>Edición</span>
+                </nav>
+            </div>
 
-	<main id="main" class="main">
+            <!-- Formulario de Edición -->
+            <section class="edit-agendamiento-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            <span th:text="${agendamiento.usuario.nombre}"></span> -
+                            <span th:text="${agendamiento.servicio.nombre}"></span>
+                        </h2>
+                    </div>
 
-		<div class="pagetitle">
-			<h1>Agendamientos</h1>
-			<nav>
-				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a th:href="@{../administrador}">Home</a></li>
-					<li class="breadcrumb-item"><a th:href="@{/agendamientos}">Agendamientos</a></li>
-					<li class="breadcrumb-item active">Edicion de agendamiento</li>
-				</ol>
-			</nav>
-		</div><!-- End Page Title -->
+                    <div class="card-body">
+                        <form th:action="@{/agendamientos/update}" method="post" class="agendamiento-form">
+                            <input type="hidden" name="id" th:value="${agendamiento.id}">
 
-		<section class="section dashboard">
-			<div class="card">
-				<div class="card-body">
-					<h5 class="card-title">Editar Agendamiento</h5>
+                            <div class="form-grid">
+                                <!-- Columna Izquierda -->
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label for="fechaHora">Fecha y Hora</label>
+                                        <input type="datetime-local" id="fechaHora" name="fechaHora"
+                                            th:value="${#temporals.format(agendamiento.fechaHora, 'yyyy-MM-dd') + 'T' + #temporals.format(agendamiento.fechaHora, 'HH:mm')}"
+                                            class="form-control" required>
+                                    </div>
 
-					<!-- General Form Elements -->
-					<form th:action="@{/agendamientos/update}" method="post" enctype="multipart/form-data">
-						<div>
-							<input type="hidden" name="id" id="id" th:value="${agendamiento.id}">
-						</div>
+                                    <div class="form-group">
+                                        <label for="estado">Estado</label>
+                                        <select id="estado" name="estado" class="form-control" required>
+                                            <option value="">Seleccione un estado</option>
+                                            <option th:each="estado : ${estadosAgendamiento}" th:value="${estado}"
+                                                th:text="${estado}" th:selected="${estado == agendamiento.estado}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
 
-						<div class="row mb-3">
-							<label for="inputText" class="col-sm-2 col-form-label">Fecha y hora: </label>
-							<div class="col-sm-10">
-								<input type="text" class="form-control" id="fechaHora" name="fechaHora"
-									placeholder="Ingrese la fecha y Hora del agendamiento" autocomplete="off" required
-									th:value="${agendamiento.fechaHora}">
-							</div>
-						</div>
+                                <!-- Columna Derecha -->
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label>Cliente</label>
+                                        <div class="form-static" th:text="${agendamiento.usuario.nombre}"></div>
+                                    </div>
 
-						<div class="row mb-3">
-							<label for="inputText" class="col-sm-2 col-form-label">Estado: </label>
-							<div class="col-sm-10">
-								<input type="text" class="form-control" id="estado" name="estado"
-									placeholder="Ingrese el estado del agendamiento" autocomplete="off" required
-									th:value="${agendamiento.estado}">
-							</div>
-						</div>
+                                    <div class="form-group">
+                                        <label>Servicio</label>
+                                        <div class="form-static" th:text="${agendamiento.servicio.nombre}"></div>
+                                    </div>
 
-						<div class="row mb-3">
-							<label class="col-sm-2 col-form-label">Guardar cambios:</label>
-							<div class="col-sm-10">
-								<button type="submit" class="btn btn-success">Actualizar</button>
-								<button type="submit" class="btn btn-danger"
-									th:onclick="@{/agendamientos}">Cancelar</button>
-							</div>
-						</div>
+                                    <div class="form-group">
+                                        <label>Sucursal</label>
+                                        <div class="form-static" th:text="${agendamiento.sucursal.nombre}"></div>
+                                    </div>
+                                </div>
 
-					</form><!-- End General Form Elements -->
+                                <!-- Campo de mensaje (ocupa ambas columnas) -->
+                                <div class="form-group form-mensaje">
+                                    <label for="mensaje">Mensaje/Notas</label>
+                                    <textarea id="mensaje" name="mensaje" class="form-control"
+                                        th:text="${agendamiento.mensaje}"></textarea>
+                                </div>
+                            </div>
 
-				</div>
-			</div>
-		</section>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <span class="material-icons-sharp">save</span>
+                                    Guardar Cambios
+                                </button>
+                                <a th:href="@{/agendamientos}" class="btn btn-secondary">
+                                    <span class="material-icons-sharp">cancel</span>
+                                    Cancelar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
 
-	</main><!-- End #main -->
+        <!-- Right Section -->
+        <div th:replace="~{administrador/template_admins.html::right_section}"></div>
+    </div>
 
-	<div th:insert="~{administrador/template_admin.html::footer}"></div>
+    <div th:replace="~{administrador/template_admins.html::jsFiles}"></div>
 
-	<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
-			class="bi bi-arrow-up-short"></i></a>
-
-	<div th:insert="~{administrador/template_admin.html::jsFiles}"></div>
-
+    <script>
+        
+        // Llamar a la función cuando se cargue la página
+        document.addEventListener('DOMContentLoaded', function() {
+            setActiveLink("agendamientos-link");
+            
+            // Configuración para el input datetime-local
+            const fechaHoraInput = document.getElementById('fechaHora');
+            if (fechaHoraInput) {
+                // Establecer fecha mínima como hoy
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                const hours = String(today.getHours()).padStart(2, '0');
+                const minutes = String(today.getMinutes()).padStart(2, '0');
+                
+                fechaHoraInput.min = `${year}-${month}-${day}T${hours}:${minutes}`;
+                
+                // Opcional: Si quieres forzar intervalos de 30 minutos
+                fechaHoraInput.addEventListener('change', function() {
+                    const date = new Date(this.value);
+                    const minutes = date.getMinutes();
+                    if (minutes % 30 !== 0) {
+                        date.setMinutes(Math.round(minutes / 30) * 30);
+                        const formattedDate = date.toISOString().slice(0, 16);
+                        this.value = formattedDate;
+                    }
+                });
+            }
+        });
+    </script>
 </body>
-
 </html>

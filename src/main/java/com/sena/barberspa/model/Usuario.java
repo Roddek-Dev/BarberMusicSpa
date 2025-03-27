@@ -19,7 +19,7 @@ public class Usuario {
 
 	private String nombre;
 
-	private String username;
+	private String imagen;
 
 	private String email;
 
@@ -30,6 +30,8 @@ public class Usuario {
 	private String tipo; // Puede ser un enum para los roles (ADMIN, USER, etc.)
 
 	private String password;
+
+	private String estado;
 
 	// Relación con Productos
 	@OneToMany(mappedBy = "usuario")
@@ -48,19 +50,32 @@ public class Usuario {
 	}
 
 	// Constructor con parámetros
-	public Usuario(Integer id, String nombre, String username, String email, String direccion, String telefono,
-			String tipo, String password) {
+	public Usuario(Integer id, String nombre, String email, String imagen, String direccion, String telefono,
+			String tipo, String password, String estado) {
 		this.id = id;
 		this.nombre = nombre;
-		this.username = username;
 		this.email = email;
+		this.imagen = imagen;
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.tipo = tipo;
 		this.password = password;
+		this.estado = estado;
 	}
 
 	// Getters y setters
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public void setImagen(String imagen) {
+		this.imagen = imagen;
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -75,14 +90,6 @@ public class Usuario {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
 	}
 
 	public String getEmail() {
@@ -149,11 +156,22 @@ public class Usuario {
 		this.ordenes = ordenes;
 	}
 
+	public Object getImagen() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setImagen(Object object) {
+		// TODO Auto-generated method stub
+
+	}
+
 	// Método toString para depuración
 	@Override
 	public String toString() {
-		return "Usuario [id=" + id + ", nombre=" + nombre + ", username=" + username + ", email=" + email
-				+ ", direccion=" + direccion + ", telefono=" + telefono + ", tipo=" + tipo + ", password=" + password
-				+ "]";
+		return "Usuario [id=" + id + ", nombre=" + nombre + ", email=" + email + ", imagen=" + imagen + ", direccion="
+				+ direccion + ", telefono=" + telefono + ", tipo=" + tipo + ", password=" + password + ", estado="
+				+ estado + "]";
 	}
+
 }

@@ -1,5 +1,6 @@
 package com.sena.barberspa.model;
 
+import java.time.LocalDateTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,8 +17,9 @@ public class Agendamiento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String fechaHora; // Renombrado a camelCase para seguir estándares de Java
+    private LocalDateTime fechaHora;  // Maneja solo fecha, hora y minutos
     private String estado;
+    private String mensaje;
 
     // Relaciones con otras tablas
     @ManyToOne
@@ -36,17 +38,28 @@ public class Agendamiento {
     public Agendamiento() {
     }
 
-    // Constructor con parámetros
-    public Agendamiento(Integer id, String fechaHora, String estado, Usuario usuario, Servicio servicio, Sucursal sucursal) {
+    
+
+	// Constructor con parámetros
+    public Agendamiento(Integer id, LocalDateTime fechaHora, String estado, Usuario usuario, Servicio servicio, Sucursal sucursal, String mensaje) {
         this.id = id;
         this.fechaHora = fechaHora;
         this.estado = estado;
         this.usuario = usuario;
         this.servicio = servicio;
         this.sucursal = sucursal;
+        this.mensaje = mensaje;
     }
 
     // Getters y Setters
+    
+    public String getMensaje() {
+		return mensaje;
+	}
+
+	public void setMensaje(String mensaje) {
+		this.mensaje = mensaje;
+	}
     public Integer getId() {
         return id;
     }
@@ -55,11 +68,11 @@ public class Agendamiento {
         this.id = id;
     }
 
-    public String getFechaHora() {
+    public LocalDateTime getFechaHora() {
         return fechaHora;
     }
 
-    public void setFechaHora(String fechaHora) {
+    public void setFechaHora(LocalDateTime fechaHora) {
         this.fechaHora = fechaHora;
     }
 
@@ -105,6 +118,7 @@ public class Agendamiento {
                 ", usuario=" + usuario +
                 ", servicio=" + servicio +
                 ", sucursal=" + sucursal +
+                ", mensaje=" + mensaje +
                 '}';
     }
 }

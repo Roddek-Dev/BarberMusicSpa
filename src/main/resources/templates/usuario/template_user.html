@@ -27,6 +27,36 @@
 	<link th:href="@{/assets/css/main.css}" rel="stylesheet">
 </head>
 
+<div th:fragment="usuarioCabecera" class="header d-flex align-items-center fixed-top">
+	<div
+		class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+		<a th:href="@{/}" class="logo d-flex align-items-center me-auto me-xl-0">
+			<img th:src="@{/assets/img/LogoMusic.png}" alt="">
+			<h1 class="sitename">BarberMusic&Spa</h1>
+		</a>
+
+		<nav id="navmenu" class="navmenu">
+			<ul>
+				<li><a href="/#hero" class="active">Inicio</a></li>
+				<li><a href="/#about">Informacion</a></li>
+				<li><a href="/#services">Servicios</a></li>
+				<li><a href="/#productos">Productos</a></li>
+				<li><a th:href="@{/getCart}">Carrito <i class="bi bi-cart"></i></a></li>
+				<li class="dropdown"><a href="#"><span>Desplegable</span> <i
+							class="bi bi-chevron-down toggle-dropdown"></i></a>
+					<ul>
+						<li><a href="/#contacto">Agenda tu cita</a></li>
+						<a th:href="@{/usuario/cerrar}">Close <i class="bi bi-box-arrow-in-right"></i></a>
+					</ul>
+				</li>
+				<i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+		</nav>
+
+		<a class="btn-getstarted" th:href="@{/administrador}">Admin <i class="bi bi-box-arrow-in-right"></i></a>
+	</div>
+</div>
+
+
 <div th:fragment="header" class="header d-flex align-items-center fixed-top">
 	<div
 		class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
@@ -41,49 +71,22 @@
 				<li><a href="/#about">Informacion</a></li>
 				<li><a href="/#services">Servicios</a></li>
 				<li><a href="/#productos">Productos</a></li>
-				<li><a href="/#contacto">Agenda tu cita</a></li>
-				<li><a th:href="@{/mantenimiento}">Carrito <i class="bi bi-cart"></i></a></li>
-			</ul>
-			<i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-		</nav>
-
-		<a class="btn-getstarted" th:href="@{/administrador}">Admin <i class="bi bi-box-arrow-in-right"></i></a>
-	</div>
-</div>
-
-
-<div th:fragment="usuarioCabecera" class="header d-flex align-items-center sticky-top">
-	<div class="container position-relative d-flex align-items-center justify-content-between">
-		<a href="@{/}" class="logo d-flex align-items-center me-auto me-xl-0">
-			<h1 class="sitename">BarberMusic&Spa</h1>
-		</a>
-
-		<nav id="navmenu" class="navmenu">
-			<ul>
-				<li><a th:href="@{/}" class="active">Home User</a></li>
-				<li><a href="#about">Usuario Logeado</a></li>
-				<li><a th:href="@{/}">Productos</a></li>
-				<li class="dropdown"><a href="#"><span>Menu desplegable</span> <i
-							class="bi bi-chevron-down toggle-dropdown"></i></a>
-					<ul>
-						<li><a href="#">Productos</a></li>
-						<li class="dropdown"><a href="#"><span>Opciones Producto</span> <i
-									class="bi bi-chevron-down toggle-dropdown"></i></a>
-							<ul>
-								<li><a href="#">Crear producto</a></li>
-								<li><a href="#">Actualizar Producto</a></li>
-							</ul>
-						</li>
-						<li><a th:href="@{/usuario/registro}">Usuarios</a></li>
-					</ul>
 				</li>
 				<li><a th:href="@{/usuario/login}">Carrito <i class="bi bi-cart"></i></a></li>
 			</ul>
 			<i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
 		</nav>
 
-		<a class="btn-getstarted" th:href="@{/}">Cerrar sesion <i class="bi bi-box-arrow-in-right"></i></a>
+		<a class="btn-getstarted" th:href="@{/usuario/login}">Login <i class="bi bi-box-arrow-in-right"></i></a>
 	</div>
+</div>
+
+<div th:fragment="search">
+	<form class="form-inline my-2 my-lg-0" method="post" th:action="@{/searchU}">
+		<input class="form-control mr-sm-2" type="search" placeholder="Buscar un producto" aria-label="search"
+			name="nombreproducto" autocomplete="off"> <br>
+		<button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Buscar <i class="bi bi-search"></i></button>
+	</form>
 </div>
 
 <div th:fragment="footer">
@@ -106,7 +109,7 @@
 					<div>
 						<h4>Tecnologo</h4>
 						<p><strong>ADSO:</strong> <span>2848170</span><br>
-												</p>
+						</p>
 					</div>
 				</div>
 
@@ -121,7 +124,7 @@
 				</div>
 
 				<div class="col-lg-3 col-md-6">
-					<img th:src="@{/assets/img/LogoBarberMusicSpa.png}" style="width: 150px;" >
+					<img th:src="@{/assets/img/LogoBarberMusicSpa.png}" style="width: 150px;">
 				</div>
 			</div>
 		</div>
@@ -146,5 +149,5 @@
 	<script th:src="@{/assets/vendor/swiper/swiper-bundle.min.js}"></script>
 
 	<!-- Main JS File -->
-	<script th:src="@{assets/js/main.js}"></script>
+	<script th:src="@{/assets/js/main.js}"></script>
 </div>

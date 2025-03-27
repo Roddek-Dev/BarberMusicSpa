@@ -1,82 +1,118 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeLeaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:insert="~{administrador/template_admin.html::head}"></head>
+<head th:replace="~{administrador/template_admins.html::head}">
+    <title>Dashboard | BarberMusic Admin</title>
+</head>
 
 <body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div th:replace="~{administrador/template_admins.html::aside}"></div>
 
-	<!-- ======= Header ======= -->
-	<div th:insert="~{administrador/template_admin.html::header}"></div>
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Sección de Productos -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h1>
+                        <span class="material-icons-sharp">inventory</span>
+                        Productos
+                    </h1>
+                    <div class="section-badge" th:text="${productos.size()}"></div>
+                </div>
+                
+                <div class="cards-container">
+                    <div class="card" th:each="producto : ${productos}">
+                        <div class="card-image-container">
+                            <img th:src="@{/images/{img} (img=${producto.imagen})}" 
+                                 th:alt="${producto.nombreproducto}"
+                                 class="card-image"
+                                 onerror="this.src='/images/default-product.png'">
+                        </div>
+                        <div class="card-info">
+                            <h5 th:text="${producto.nombreproducto}"></h5>
+                            <p class="card-description" th:text="${producto.descripcion}"></p>
+                            <div class="card-footer">
+                                <span class="card-price" th:text="'$' + ${#numbers.formatDecimal(producto.precio, 1, 2)}"></span>
+                                <span class="card-stock" th:text="${producto.cantidad} + ' unidades'"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
+            <!-- Sección de Servicios -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h1>
+                        <span class="material-icons-sharp">spa</span>
+                        Servicios
+                    </h1>
+                    <div class="section-badge" th:text="${servicios.size()}"></div>
+                </div>
+                
+                <div class="cards-container">
+                    <div class="card" th:each="servicio : ${servicios}">
+                        <div class="card-image-container">
+                            <img th:src="@{/images/{img} (img=${servicio.imagen})}" 
+                                 th:alt="${servicio.nombre}"
+                                 class="card-image"
+                                 onerror="this.src='/images/default-service.png'">
+                        </div>
+                        <div class="card-info">
+                            <h5 th:text="${servicio.nombre}"></h5>
+                            <p class="card-description" th:text="${servicio.descripcion}"></p>
+                            <div class="card-footer">
+                                <span class="card-price" th:text="'$' + ${#numbers.formatDecimal(servicio.precio, 1, 2)}"></span>
+                                <span class="card-duration" th:text="${servicio.duracion} + ' min'"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-	<main id="main" class="main">
+            <!-- Sección de Sucursales -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h1>
+                        <span class="material-icons-sharp">store</span>
+                        Sucursales
+                    </h1>
+                    <div class="section-badge" th:text="${sucursales.size()}"></div>
+                </div>
+                
+                <div class="cards-container">
+                    <div class="card" th:each="sucursal : ${sucursales}">
+                        <div class="card-image-container">
+                            <img th:src="@{/images/{img} (img=${sucursal.imagen})}" 
+                                 th:alt="${sucursal.nombre}"
+                                 class="card-image"
+                                 onerror="this.src='/images/default-branch.png'">
+                        </div>
+                        <div class="card-info">
+                            <h5 th:text="${sucursal.nombre}"></h5>
+                            <p class="card-description" th:text="${sucursal.direccion} + ', ' + ${sucursal.ciudad}"></p>
+                            <div class="card-footer">
+                                <span class="card-schedule">
+                                    <span class="material-icons-sharp" style="font-size: 1rem;">schedule</span>
+                                    <span th:text="${sucursal.horarios}"></span>
+                                </span>
+                                <a th:href="${sucursal.link_maps}" target="_blank" class="card-map">
+                                    <span class="material-icons-sharp" style="font-size: 1rem;">map</span>
+                                    Ver mapa
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
 
-		<div class="pagetitle">
-			<h1>Panel</h1>
-			<nav>
-				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a href="index.html">Inicio</a></li>
-					<li class="breadcrumb-item active">Panel</li>
-				</ol>
-			</nav>
-		</div><!-- End Page Title -->
-
-		<section class="section dashboard">
-			<h1>Productos</h1>
-			<div class="row align-items-top">
-				<div class="col-lg-4" th:each="producto:${productos}">
-					<!-- Card with an image on top -->
-					<div class="card">
-						<img th:src="@{/images/{img} (img=${producto.imagen})}" class="card-img-top" th:alt="${producto.nombreproducto}">
-						<div class="card-body">
-							<h5 class="card-title" th:text="${producto.nombreproducto}"></h5>
-							<p class="card-text" th:text="${producto.descripcion}"></p>
-						</div>
-					</div><!-- End Card with an image on top -->
-				</div>
-			</div>
-		</section>
-
-		<section class="section dashboard">
-			<h1>Servicios</h1>
-			<div class="row align-items-top">
-				<div class="col-lg-4" th:each="servicio:${servicios}">
-					<!-- Card with an image on top -->
-					<div class="card">
-						<img th:src="@{/images/{img} (img=${servicio.imagen})}" class="card-img-top" th:alt="${servicio.nombre}">
-						<div class="card-body">
-							<h5 class="card-title" th:text="${servicio.nombre}"></h5>
-							<p class="card-text" th:text="${servicio.descripcion}"></p>
-						</div>
-					</div><!-- End Card with an image on top -->
-				</div>
-			</div>
-		</section>
-		<section class="section dashboard">
-					<h1>Sucursales</h1>
-					<div class="row align-items-top">
-						<div class="col-lg-4" th:each="sucursal:${sucursales}">
-							<!-- Card with an image on top -->
-							<div class="card">
-								<img th:src="@{/images/{img} (img=${sucursal.imagen})}" class="card-img-top" th:alt="${sucursal.nombre}">
-								<div class="card-body">
-									<h5 class="card-title" th:text="${sucursal.nombre}"></h5>
-									<p class="card-text" th:text="${sucursal.direccion}"></p>
-								</div>
-							</div><!-- End Card with an image on top -->
-						</div>
-					</div>
-				</section>
-
-	</main><!-- End #main -->
-
-	<div th:insert="~{administrador/template_admin.html::footer}"></div>
-
-	<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
-			class="bi bi-arrow-up-short"></i></a>
-
-	<div th:insert="~{administrador/template_admin.html::jsFiles}"></div>
-
+        <!-- Right Section -->
+        <div th:replace="~{administrador/template_admins.html::right_section}"></div>
+    </div>
+    
+    <div th:replace="~{administrador/template_admins.html::jsFiles}"></div>
 </body>
-
 </html>

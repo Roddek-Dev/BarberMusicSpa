@@ -175,3 +175,22 @@
   document.addEventListener('scroll', navmenuScrollspy);
 
 })();
+
+
+document.addEventListener("DOMContentLoaded", function () {
+   const appointmentInput = document.getElementById("appointment");
+   
+   // Obtener la fecha de mañana en el formato adecuado para datetime-local
+   let tomorrow = new Date();
+   tomorrow.setDate(tomorrow.getDate() + 1);
+   let year = tomorrow.getFullYear();
+   let month = String(tomorrow.getMonth() + 1).padStart(2, "0");
+   let day = String(tomorrow.getDate()).padStart(2, "0");
+   let minHour = "08:00"; // Hora mínima de selección (puedes cambiarla)
+   
+   // Formato YYYY-MM-DDTHH:MM para datetime-local
+   let minDateTime = `${year}-${month}-${day}T${minHour}`;
+
+   // Configurar la fecha mínima en el input
+   appointmentInput.min = minDateTime;
+ });

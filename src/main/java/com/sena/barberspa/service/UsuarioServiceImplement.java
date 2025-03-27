@@ -31,13 +31,14 @@ public class UsuarioServiceImplement implements IUsuarioService {
 	@Override
 	public void update(Usuario usuario) {
 		// TODO Auto-generated method stub
+		usuarioRepository.save(usuario);
 
 	}
 
 	@Override
 	public void delete(Integer id) {
 		// TODO Auto-generated method stub
-
+		usuarioRepository.deleteById(id);
 	}
 
 	@Override
@@ -59,6 +60,3 @@ public class UsuarioServiceImplement implements IUsuarioService {
 	}
 
 }
-
-
-

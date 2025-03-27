@@ -8,7 +8,6 @@
 	<div th:insert="~{usuario/template_user.html::header}" th:if="${sesion == null}"></div>
 	<div th:insert="~{usuario/template_user.html::usuarioCabecera}" th:unless="${sesion == null}"></div>
 
-	<section><!--Buscador--></section>
 
 	<main class="main">
 
@@ -18,7 +17,7 @@
 				<h1>Servicios</h1>
 				<nav class="breadcrumbs">
 					<ol>
-						<li><a href="index.html">Home</a></li>
+						<li><a th:href="@{/}">Inicio</a></li>
 						<li class="current">Servicios</li>
 					</ol>
 				</nav>
@@ -36,12 +35,9 @@
 
 						<div class="service-box">
 							<h4>Lista de Servicios</h4>
-							<div class="services-list">
-								<a href="#" class="active"><i class="bi bi-arrow-right-circle"></i><span>Limpieza Facial</span></a>
-								<a href="#"><i class="bi bi-arrow-right-circle"></i><span>Corte de Cabello</span></a>
-								<a href="#"><i class="bi bi-arrow-right-circle"></i><span>Peinados y estilizado</span></a>
-								<a href="#"><i class="bi bi-arrow-right-circle"></i><span>Tratamientos Capilares</span></a>
-								<a href="#"><i class="bi bi-arrow-right-circle"></i><span>Despigmentacion</span></a>
+							<div class="services-list" th:each="servicio: ${servicios}">
+								<a th:href="@{/servicioHome/{id} (id=${servicio.id})}" th:text="${servicio.nombre}"><i
+										class="bi bi-arrow-right-circle"></i><span></span></a>
 							</div>
 						</div><!-- End Services List -->
 
@@ -57,20 +53,21 @@
 							<i class="bi bi-headset help-icon"></i>
 							<h4>Tienes una pregunta?</h4>
 							<p class="d-flex align-items-center mt-2 mb-0"><i class="bi bi-telephone me-2"></i>
-								<span>+52 993 315 5664</span></p>
+								<span>+52 993 315 5664</span>
+							</p>
 							<p class="d-flex align-items-center mt-1 mb-0"><i class="bi bi-envelope me-2"></i> <a
 									th:href="@{/mantenimiento}">catcomarketing@gmail.com</a></p>
 						</div>
 
 					</div>
 					<div class="col-lg-8 ps-lg-5" data-aos="fade-up" data-aos-delay="200">
-						<img th:src="@{assets/img/limpieza facial.jpg}" alt="Servicio de Barbería y Spa"
+						<img th:src="@{images/img/tratamiento.jpeg}" alt="Servicio de Barbería y Spa"
 							class="img-fluid services-img">
-						<h3>Relájate y Revitalízate con Nuestros Servicios de Barbería y Spa</h3>
+						<h3>Corte de Cabello</h3>
 						<p>
-							Disfruta de una experiencia única de relajación y cuidado personal. En nuestra barbería y
-							spa, combinamos los mejores servicios de afeitado y corte de cabello con tratamientos de spa
-							rejuvenecedores, diseñados para brindarte confort y frescura.
+							El corte de cabello es el proceso de dar forma y estilo al cabello mediante el uso de
+							tijeras, navajas o máquinas eléctricas. Puede realizarse con diferentes técnicas y estilos
+							según la textura del cabello, la forma del rostro y la preferencia personal.
 						</p>
 						<ul>
 							<li><i class="bi bi-check-circle"></i> <span>Cortes de cabello personalizados y de
@@ -81,15 +78,15 @@
 									rejuvenecedores.</span></li>
 						</ul>
 						<p>
-							Nuestro equipo de expertos barberos y terapeutas del spa está dedicado a ofrecerte una
+							Nuestro equipo de expertos barberos está dedicado a ofrecerte una
 							atención de calidad, brindando un ambiente relajado y profesional donde podrás desconectar
-							del estrés diario. Desde cortes clásicos hasta masajes personalizados, nos aseguramos de que
+							del estrés diario. Desde cortes clásicos hasta los cortes de moda, nos aseguramos de que
 							te sientas renovado.
 						</p>
 						<p>
-							Además, utilizamos productos de alta gama que cuidan tu piel y tu cabello, ofreciendo
-							resultados duraderos y una sensación de bienestar total. Ya sea que vengas para un corte de
-							cabello rápido o un día completo de spa, tu satisfacción está garantizada.
+							Además, utilizamos productos de alta gama que cuidan tu cabello, ofreciendo
+							resultados duraderos y una sensación de bienestar total. Ven para un corte de
+							cabello rápido, tu satisfacción está garantizada.
 						</p>
 						<p>
 							Ven y vive la experiencia de transformación total, donde no solo mejorarás tu apariencia,
