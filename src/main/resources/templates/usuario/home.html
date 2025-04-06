@@ -8,7 +8,6 @@
 	<div th:insert="~{usuario/template_user.html::header}" th:if="${sesion == null}"></div>
 	<div th:insert="~{usuario/template_user.html::usuarioCabecera}" th:unless="${sesion == null}"></div>
 
-	<section><!--Buscador--></section>
 
 	<main class="main">
 
@@ -40,9 +39,9 @@
 								<a href="#contacto" class="btn btn-primary me-0 me-sm-2 mx-1">Iniciar</a>
 
 
-								<a href="#services" class="btn btn-primary me-0 me-sm-2 mx-1">
+								<a href="#services" class="btn btn-link mt-2 mt-sm-0 glightbox">
 
-									Servicios</a>
+									<i class="bi bi-play-circle me-1"></i></a>
 
 
 								</a>
@@ -65,7 +64,8 @@
 									<span class="avatar more">12+</span>
 								</div>
 								<p class="mb-0 mt-2">
-									6 sucursales distribuidas por todo el país y con más de
+									<span th:text="${#lists.size(sucursales)} + ' sucursales'"></span> distribuidas por
+									todo el país y con más de
 									1,000 clientes por mes
 								</p>
 							</div>
@@ -429,42 +429,94 @@
 								¡Agenda tu cita en nuestra barbería y spa! Relájate, renueva tu estilo y vive una
 								experiencia única. ✨💇‍♂️💆‍♀️
 							</p>
+							<div th:if="${sesion == null}">
+								<form enctype="multipart/form-data" class="php-email-form" data-aos="fade-up"
+									data-aos-delay="200">
+									<div class="row gy-4">
+										<input placeholder="Selecciona fecha y hora" class="form-control"
+											type="datetime-local" id="fechaHora" name="fechaHora" required>
 
-							<form class="php-email-form" data-aos="fade-up" data-aos-delay="200">
-								<div class="row gy-4">
-									<div class="col-12">
-										<input type="text" name="fechaHora" class="form-control"
-											placeholder="Fecha y hora" required="" />
-									</div>
+										<div class="col-12">
+											<select class="form-control" name="servicio" required>
+												<option th:each="servicio : ${servicios}" th:value="${servicio.id}"
+													th:text="${servicio.nombre}"></option>
+											</select>
 
-									<div class="col-12">
-										<input type="text" class="form-control" name="subject" placeholder="Servicio"
-											required="" />
-									</div>
-
-									<div class="col-12">
-										<input type="text" class="form-control" name="subject" placeholder="Sucursal"
-											required="" />
-									</div>
-
-									<div class="col-12">
-										<textarea class="form-control" name="message" rows="6" placeholder="Mensaje"
-											required=""></textarea>
-									</div>
-
-									<div class="col-12 text-center">
-										<div class="loading">oLading</div>
-										<div class="error-message"></div>
-										<div class="sent-message">
-											Your message has been sent. Thank you!
 										</div>
-										<a class="btn" th:href="@{/mantenimiento}">
-											Enviar Mensaje
-										</a>
 
+										<div class="col-12">
+											<select class="form-control" name="sucursal" required>
+												<option th:each="sucursal : ${sucursales}" th:value="${sucursal.id}"
+													th:text="${sucursal.ciudad}"></option>
+											</select>
+										</div>
+
+										<div class="col-12">
+											<textarea class="form-control" id="mensaje" name="mensaje" rows="6"
+												placeholder="Mensaje / Asunto" required></textarea>
+										</div>
+
+										<div class="col-12 text-center">
+											<div class="loading">oLading</div>
+											<div class=""></div>
+											<div class="sent-message">
+												Tu reserva ha sido enviada. Gracias!
+											</div>
+											<a th:href="@{/usuario/login}">
+												<button class="btn" type="button">
+													Enviar Mensaje
+												</button>
+											</a>
+
+										</div>
 									</div>
-								</div>
-							</form>
+								</form>
+							</div>
+							<div th:unless="${sesion == null}">
+								<form th:action="@{/agendamientos/save}" method="post" enctype="multipart/form-data"
+									class="php-email-form" data-aos="fade-up" data-aos-delay="200">
+									<div class="row gy-4">
+										<div class="col-12">
+											<input placeholder="Selecciona fecha y hora" class="form-control"
+												type="datetime-local" id="fechaHora" name="fechaHora" step="900"
+												min="08:00" max="20:00" required>
+											<small class="text-muted">Seleccione en intervalos de 15 minutos (8:00 am -
+												8:00 pm)</small>
+										</div>
+
+										<div class="col-12">
+											<select class="form-control" name="servicio" required>
+												<option th:each="servicio : ${servicios}" th:value="${servicio.id}"
+													th:text="${servicio.nombre}"></option>
+											</select>
+										</div>
+
+										<div class="col-12">
+											<select class="form-control" name="sucursal" required>
+												<option th:each="sucursal : ${sucursales}" th:value="${sucursal.id}"
+													th:text="${sucursal.nombre}"></option>
+											</select>
+										</div>
+
+										<div class="col-12">
+											<textarea class="form-control" id="mensaje" name="mensaje" rows="6"
+												placeholder="Mensaje / Asunto" required></textarea>
+										</div>
+
+										<div class="col-12 text-center">
+											<div class="loading">Loading</div>
+											<div class="error-message"></div>
+											<div class="sent-message">
+												Tu reserva ha sido enviada. Gracias!
+											</div>
+											<button class="btn" type="submit">
+												Enviar Mensaje
+											</button>
+										</div>
+									</div>
+								</form>
+							</div>
+
 						</div>
 					</div>
 				</div>
@@ -484,7 +536,33 @@
 
 	<div th:insert="~{usuario/template_user.html::jsFiles}">
 
+
 	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const fechaHoraInput = document.getElementById('fechaHora');
+
+			fechaHoraInput.addEventListener('change', function () {
+				const fechaHora = new Date(this.value);
+				const horas = fechaHora.getHours();
+				const minutos = fechaHora.getMinutes();
+
+				// Validar horario
+				if (horas < 8 || horas >= 20) {
+					alert('Por favor seleccione un horario entre 8:00 am y 8:00 pm');
+					this.value = '';
+					return;
+				}
+
+				// Validar intervalos de 15 minutos
+				if (minutos % 15 !== 0) {
+					alert('Las citas deben ser en intervalos de 15 minutos (00, 15, 30, 45)');
+					this.value = '';
+				}
+			});
+		});
+	</script>
 
 </body>
 

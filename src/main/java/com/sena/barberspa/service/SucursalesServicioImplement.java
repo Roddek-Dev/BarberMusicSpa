@@ -45,10 +45,10 @@ public class SucursalesServicioImplement implements ISucursalesService {
 		return sucursalRepository.findAll();
 	}
 
-	//@Override
-	//public List<Sucursal> findbyNombre(String Nombre) {
-		// TODO Auto-generated method stub
-		//return null;
-	//}
+	// @Override
+	// public List<Sucursal> findbyNombre(String Nombre) {
+	// TODO Auto-generated method stub
+	// return null;
+	// }
 
 }

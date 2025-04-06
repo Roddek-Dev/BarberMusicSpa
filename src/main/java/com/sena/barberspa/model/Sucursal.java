@@ -19,22 +19,34 @@ public class Sucursal {
 	private String direccion;
 	private String link_maps;
 	private String horarios; // Considera cambiarlo por una estructura más detallada si es necesario
-
+	private String ciudad;
+	
 	// Constructor vacío
 	public Sucursal() {
 	}
 
 	// Constructor con parámetros
-	public Sucursal(Integer id, String nombre, String imagen, String direccion, String link_maps, String horarios) {
+	public Sucursal(Integer id, String nombre, String imagen, String direccion, String link_maps, String horarios, String ciudad) {
 		this.id = id;
 		this.nombre = nombre;
 		this.imagen = imagen;
 		this.direccion = direccion;
 		this.link_maps = link_maps;
 		this.horarios = horarios;
+		this.ciudad = ciudad;
 	}
 
 	// Getters y Setters
+	
+
+	public String getCiudad() {
+		return ciudad;
+	}
+
+	public void setCiudad(String ciudad) {
+		this.ciudad = ciudad;
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -87,6 +99,6 @@ public class Sucursal {
 	@Override
 	public String toString() {
 		return "Sucursal [id=" + id + ", nombre=" + nombre + ", imagen=" + imagen + ", direccion=" + direccion
-				+ ", link_maps=" + link_maps + ", horarios=" + horarios + "]";
+				+ ", link_maps=" + link_maps + ", horarios=" + horarios + ", ciudad=" + ciudad + "]";
 	}
 }

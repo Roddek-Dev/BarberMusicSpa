@@ -1,85 +1,107 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeLeaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:insert="~{administrador/template_admin.html::head}"></head>
+<head th:replace="~{administrador/template_admins.html :: head}">
+	<title>Servicios | BarberMusic Admin</title>
+</head>
 
 <body>
+	<div class="container">
+		<!-- Sidebar -->
+		<div th:replace="~{administrador/template_admins.html :: aside}"></div>
 
-	<!-- ======= Header ======= -->
-	<div th:insert="~{administrador/template_admin.html::header}"></div>
-	<!-- ======= End Header ======= -->
+		<!-- Main Content -->
+		<main class="dashboard-main">
+			<!-- Encabezado -->
+			<div class="page-header">
+				<h1>
+					<span class="material-icons-sharp">miscellaneous_services</span>
+					Servicios
+				</h1>
+				<nav class="breadcrumbs">
+					<a th:href="@{/administrador}">Inicio</a>
+					<span class="material-icons-sharp">chevron_right</span>
+					<span>Servicios</span>
+				</nav>
+			</div>
 
-	<main id="main" class="main">
+			<!-- Contenido Principal -->
+			<section class="tabla-section">
+				<div class="card">
+					<div class="card-header">
+						<h2>Lista de Servicios</h2>
+						<a th:href="@{/servicios/create}" class="btn-add">
+							<span class="material-icons-sharp">add</span>
+							Nuevo Servicio
+						</a>
+					</div>
 
-		<div class="pagetitle">
-			<h1>Servicios</h1>
-			<nav>
-				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a th:href="@{../administrador}">Home</a></li>
-					<li class="breadcrumb-item"><a th:href="@{/servicios}">Servicios</a></li>
-					<li class="breadcrumb-item active">Lista de Servicios</li>
-				</ol>
-			</nav>
-		</div><!-- End Page Title -->
-
-		<section class="section dashboard">
-			<div class="row">
-				<div class="col-lg-12">
-
-					<div class="card">
-						<div class="card-body">
-							<h5 class="card-title">Lista de servicios</h5>
-							<p>Creación de Servicios:
-								<br><a class="btn btn-primary" th:href="@{/servicios/create}">Crear servicios</a>
-							</p>
-
-							<!-- Table with stripped rows -->
-							<table class="table datatable">
+					<div class="card-body">
+						<div class="table-responsive">
+							<table class="agendamientos-table">
 								<thead>
 									<tr>
-										<th scope="col">Nombre</th>
-										<th scope="col">Descripción</th>
-										<th scope="col">Duracion</th>
-										<th scope="col">Precio</th>
-										<th scope="col">Acción</th>
-										<th scope="col">Acción</th>
+										<th>Nombre</th>
+										<th>Descripción</th>
+										<th>Duración</th>
+										<th>Precio</th>
+										<th>Acciones</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr th:each="servicio:${servicios}">
+									<tr th:each="servicio, stat : ${servicios}" th:class="${stat.odd}? 'odd-row'">
 										<td th:text="${servicio.nombre}"></td>
-										<td th:text="${servicio.descripcion}"></td>
-										<td th:text="${servicio.duracion}"></td>
-										<td
-											th:text="${#strings.concat('$', #numbers.formatDecimal(servicio.precio, 0, 'COMMA' , 0 , 'POINT'))}">
+										<td>
+											<span class="text-truncate" style="max-width: 200px; display: inline-block;"
+												th:text="${servicio.descripcion}">
+											</span>
 										</td>
-										<td><a class="btn btn-warning"
-												th:href="@{servicios/edit/{id} (id=${servicio.id})}">Editar</a>
+										<td th:text="${servicio.duracion + ' min'}"></td>
+										<td th:text="${'$' + #numbers.formatDecimal(servicio.precio, 1, 2, 'COMMA')}">
 										</td>
-										<td><a class="btn btn-danger"
-												th:href="@{servicios/delete/{id} (id=${servicio.id})}">Eliminar<a>
+										<td class="actions">
+											<a class="btn-action btn-edit"
+												th:href="@{/servicios/edit/{id}(id=${servicio.id})}" title="Editar">
+												<span class="material-icons-sharp">edit</span>
+											</a>
+											<a class="btn-action btn-delete" th:href="@{/servicios/delete/{id}(id=${servicio.id})}"
+												title="Eliminar">
+												<span class="material-icons-sharp">delete</span>
+											</a>
+										</td>
+									</tr>
+									<tr th:if="${servicios.empty}">
+										<td colspan="5" class="text-center text-muted py-3">
+											No hay servicios registrados
 										</td>
 									</tr>
 								</tbody>
 							</table>
-							<!-- End Table with stripped rows -->
-
 						</div>
 					</div>
-
 				</div>
-			</div>
-		</section>
+			</section>
+		</main>
 
-	</main><!-- End #main -->
+		<!-- Right Section -->
+		<div th:replace="~{administrador/template_admins.html :: right_section}"></div>
+	</div>
 
-	<div th:insert="~{administrador/template_admin.html::footer}"></div>
+	<div th:replace="~{administrador/template_admins.html :: jsFiles}"></div>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			setActiveLink("servicios-link");
 
-	<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
-			class="bi bi-arrow-up-short"></i></a>
-
-	<div th:insert="~{administrador/template_admin.html::jsFiles}"></div>
-
+			// Mejora para confirmación de eliminación
+			document.querySelectorAll('.btn-delete').forEach(btn => {
+				btn.addEventListener('click', function (e) {
+					if (!confirm('¿Estás seguro de eliminar este servicio?')) {
+						e.preventDefault();
+					}
+				});
+			});
+		});
+	</script>
 </body>
 
 </html>

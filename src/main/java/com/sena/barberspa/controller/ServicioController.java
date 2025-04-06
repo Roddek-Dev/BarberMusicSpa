@@ -1,19 +1,24 @@
 package com.sena.barberspa.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sena.barberspa.model.Servicio;
 import com.sena.barberspa.model.Usuario;
@@ -21,12 +26,14 @@ import com.sena.barberspa.service.IServiciosService;
 import com.sena.barberspa.service.IUsuarioService;
 import com.sena.barberspa.service.UploadFileService;
 
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+
 @Controller
 @RequestMapping("/servicios")
 public class ServicioController {
 
-	// Instancia de LOGGER para ver datos en consola
-	private final Logger LOGGER = (Logger) LoggerFactory.getLogger(ServicioController.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(ServicioController.class);
 
 	@Autowired
 	private IServiciosService servicioService;
@@ -34,80 +41,128 @@ public class ServicioController {
 	@Autowired
 	private IUsuarioService usuarioService;
 
-	// microsevicio imagenes
-
 	@Autowired
 	private UploadFileService upload;
 
-	// metodo para redirigir a la vista show en el template de productos
 	@GetMapping("")
 	public String show(Model model) {
 		model.addAttribute("servicios", servicioService.findAll());
 		return "servicios/show";
 	}
 
-	// metodo es el que redirige a la vista de creacion de productos
+	// Método para agregar el usuario a todos los modelos
+	@ModelAttribute
+	public void addUsuarioToModel(Model model, HttpSession session) {
+		Integer idUsuario = (Integer) session.getAttribute("idUsuario");
+		if (idUsuario != null) {
+			Usuario usuario = usuarioService.findById(idUsuario).orElse(null);
+			if (usuario != null) {
+				model.addAttribute("usuario", usuario);
+			}
+		}
+	}
+
 	@GetMapping("/create")
-	public String create() {                                                                                                                                                                                                                                                                                                                                                         
+	public String create(Model model) {
+		model.addAttribute("servicio", new Servicio()); // Añade esta línea clave
 		return "servicios/create";
 	}
 
-	// metodo de creacion de productos
 	@PostMapping("/save")
-	public String save(Servicio servicio, @RequestParam("img") MultipartFile file) throws IOException {
-		LOGGER.info("Este es el objeto del servicio a guardar en la DB {}", servicio);
-		Usuario u = new Usuario(1, "", "", "", "", "", "", "");
-		servicio.setUsuario(u);
-		// validacion imagen del producto
+	public String save(@Valid Servicio servicio, BindingResult result, @RequestParam("img") MultipartFile file,
+			HttpSession session, RedirectAttributes redirectAttributes) throws IOException {
 
-		if (servicio.getId() == null) {
+		if (result.hasErrors()) {
+			return "servicios/create";
+		}
+
+		LOGGER.info("Guardando servicio: {}", servicio);
+		Usuario u = usuarioService.findById(Integer.parseInt(session.getAttribute("idUsuario").toString())).get();
+		servicio.setUsuario(u);
+
+		// Manejo de la imagen
+		if (!file.isEmpty()) {
 			String nombreImagen = upload.saveImages(file, servicio.getNombre());
 			servicio.setImagen(nombreImagen);
+		} else {
+			servicio.setImagen("default.jpg");
 		}
+
 		servicioService.save(servicio);
+		redirectAttributes.addFlashAttribute("success", "Servicio creado exitosamente");
 		return "redirect:/servicios";
 	}
 
-	// metodo para llenar los imputs de la vista edit
 	@GetMapping("/edit/{id}")
 	public String edit(@PathVariable Integer id, Model model) {
-		Servicio s = new Servicio();
-		Optional<Servicio> os = servicioService.get(id);
-		s = os.get();
-		LOGGER.info("Busqueda de servicio por id {}", s);
-		model.addAttribute("servicio", s);
+		Optional<Servicio> optionalServicio = servicioService.get(id);
+
+		if (optionalServicio.isEmpty()) {
+			return "redirect:/servicios";
+		}
+
+		model.addAttribute("servicio", optionalServicio.get());
 		return "servicios/edit";
 	}
 
-	// metodo para actualizar los datos de un servicio
 	@PostMapping("/update")
-	public String update(Servicio servicio, @RequestParam("img") MultipartFile file) throws IOException {
-		LOGGER.info("Este es el objeto del servicio a actualizar en la DB {}", servicio);
-		Servicio s = new Servicio();
-		s = servicioService.get(servicio.getId()).get();
+	public String update(@Valid Servicio servicio, BindingResult result, @RequestParam("img") MultipartFile file,
+			RedirectAttributes redirectAttributes) throws IOException {
+
+		if (result.hasErrors()) {
+			return "servicios/edit";
+		}
+
+		LOGGER.info("Actualizando servicio: {}", servicio);
+		Servicio existingServicio = servicioService.get(servicio.getId()).orElse(null);
+
+		if (existingServicio == null) {
+			return "redirect:/servicios";
+		}
+
+		// Manejo de la imagen
 		if (file.isEmpty()) {
-			servicio.setImagen(s.getImagen());
+			servicio.setImagen(existingServicio.getImagen());
 		} else {
-			if (!s.getImagen().equals("default.jpg")) {
-				upload.deleteImage(s.getImagen());
+			if (!existingServicio.getImagen().equals("default.jpg")) {
+				upload.deleteImage(existingServicio.getImagen());
 			}
-			String nombreImagen = upload.saveImages(file, s.getNombre());
+			String nombreImagen = upload.saveImages(file, servicio.getNombre());
 			servicio.setImagen(nombreImagen);
 		}
-		servicio.setUsuario(s.getUsuario());
+
+		servicio.setUsuario(existingServicio.getUsuario());
 		servicioService.update(servicio);
+		redirectAttributes.addFlashAttribute("success", "Servicio actualizado exitosamente");
 		return "redirect:/servicios";
 	}
 
 	@GetMapping("/delete/{id}")
-	public String delete(@PathVariable Integer id) {
-		Servicio s = new Servicio();
-		s = servicioService.get(id).get();
-		if (!s.getImagen().equals("default.jpg")) {
-			upload.deleteImage(s.getImagen());
+	public String delete(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+		Optional<Servicio> optionalServicio = servicioService.get(id);
+
+		if (optionalServicio.isPresent()) {
+			Servicio servicio = optionalServicio.get();
+
+			if (!servicio.getImagen().equals("default.jpg")) {
+				upload.deleteImage(servicio.getImagen());
+			}
+
+			servicioService.delete(id);
+			redirectAttributes.addFlashAttribute("success", "Servicio eliminado exitosamente");
+		} else {
+			redirectAttributes.addFlashAttribute("error", "No se encontró el servicio");
 		}
-		servicioService.delete(id);
+
 		return "redirect:/servicios";
 	}
 
+	@PostMapping("/search")
+	public String searchServicio(@RequestParam String nombre, Model model) {
+		LOGGER.info("Buscando servicio: {}", nombre);
+		List<Servicio> servicios = servicioService.findAll().stream()
+				.filter(p -> p.getNombre().toUpperCase().contains(nombre.toUpperCase())).collect(Collectors.toList());
+		model.addAttribute("servicios", servicios);
+		return "servicios/show";
+	}
 }

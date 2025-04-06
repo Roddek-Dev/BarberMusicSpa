@@ -1,146 +1,288 @@
 package com.sena.barberspa.controller;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.sena.barberspa.model.DetalleOrden;
-import com.sena.barberspa.model.Orden;
-import com.sena.barberspa.model.Producto;
-import com.sena.barberspa.service.IProductoService;
+import com.mercadopago.exceptions.MPApiException;
+import com.mercadopago.exceptions.MPException;
+import com.sena.barberspa.model.*;
+import com.sena.barberspa.service.*;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/") // La raiz del proyecto
+@RequestMapping("/")
 public class homeUserController {
 
-	// Instancia de LOGGER para ver datos por consola
-	private final Logger LOGGER = (Logger) LoggerFactory.getLogger(homeUserController.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(homeUserController.class);
 
-	// Instancia de objeto - Servicio
+	@Autowired
+	private MercadoPagoService mercadoPagoService;
 	@Autowired
 	private IProductoService productoService;
+	@Autowired
+	private IServiciosService servicioService;
+	@Autowired
+	private ISucursalesService sucursalService;
+	@Autowired
+	private IUsuarioService usuarioService;
+	@Autowired
+	private IOrdenService ordenService;
+	@Autowired
+	private IDetalleOrdenService detalleOrdenService;
+	@Autowired
+	private IAgendamientosService agendamientosService;
 
-	// dos variables
-	// lista de detallles de la orden para guardarlos en la database
-	List<DetalleOrden> detalles = new ArrayList<DetalleOrden>();
+	// Variables temporales para el carrito
+	private List<DetalleOrden> detalles = new ArrayList<>();
+	private Orden orden = new Orden();
 
-	// objeto que almacena los datos de la orden
-	Orden orden = new Orden();
-
-	// Metodo que mapea la vista de usuario en la raiz del proyecto
 	@GetMapping("")
-	public String home(Model model) {
+	public String home(Model model, HttpSession session) {
+		model.addAttribute("productos", productoService.findAll());
+		model.addAttribute("servicios", servicioService.findAll());
+		model.addAttribute("sucursales", sucursalService.findAll());
+		model.addAttribute("sesion", session.getAttribute("idUsuario"));
 		return "usuario/home";
 	}
+
 	@GetMapping("/mantenimiento")
-	public String mantenimiento(Model model) {
+	public String mantenimiento(Model model, HttpSession session) {
+		model.addAttribute("sesion", session.getAttribute("idUsuario"));
 		return "usuario/mantenimiento";
 	}
-	
-	
+
 	@GetMapping("/productosVista")
-	public String productosVista(Model model) {
+	public String productosVista(Model model, HttpSession session) {
 		model.addAttribute("productos", productoService.findAll());
+		model.addAttribute("sesion", session.getAttribute("idUsuario"));
 		return "usuario/productosVista";
 	}
+
 	@GetMapping("/serviciosVista")
-	public String serviciosVista(Model model) {
+	public String serviciosVista(Model model, HttpSession session) {
+		model.addAttribute("servicios", servicioService.findAll());
+		model.addAttribute("sesion", session.getAttribute("idUsuario"));
 		return "usuario/serviciosVista";
 	}
 
-	// Metodo que carga el producto de usuario con el id
+	@PostMapping("/save")
+	public String saveAgendamiento(@RequestParam("servicio") Integer idServicio,
+			@RequestParam("sucursal") Integer idSucursal, @RequestParam String fechaHora, @RequestParam String mensaje,
+			HttpSession session) throws IOException {
+
+		Usuario usuario = usuarioService.findById(Integer.parseInt(session.getAttribute("idUsuario").toString()))
+				.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+		Agendamiento agendamiento = new Agendamiento();
+		agendamiento.setFechaHora(LocalDateTime.parse(fechaHora, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
+		agendamiento.setMensaje(mensaje);
+		agendamiento.setServicio(servicioService.get(idServicio).orElseThrow());
+		agendamiento.setSucursal(sucursalService.get(idSucursal).orElseThrow());
+		agendamiento.setEstado("SOLICITADA");
+		agendamiento.setUsuario(usuario);
+
+		agendamientosService.save(agendamiento);
+		return "redirect:/";
+	}
+
 	@GetMapping("productoHome/{id}")
-	public String productoHome(@PathVariable Integer id, Model model) {
-		LOGGER.info("ID producto enviado como parametro {}", id);
-		// Variable de clase producto
-		Producto p = new Producto();
-		// objeto de tipo optional
-		Optional<Producto> op = productoService.get(id);
-		// pasar el producto
-		p = op.get();
-		// enviar a la vista con el model los detalles del producto
-		model.addAttribute("producto", p);
+	public String productoHome(@PathVariable Integer id, Model model, HttpSession session) {
+		Producto producto = productoService.get(id).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+		model.addAttribute("producto", producto);
+		model.addAttribute("sesion", session.getAttribute("idUsuario"));
 		return "usuario/productoHome";
 	}
 
-	// metodo para enviardel boton de productohome al carrito
+	@GetMapping("servicioHome/{id}")
+	public String servicioHome(@PathVariable Integer id, Model model, HttpSession session) {
+		Servicio servicio = servicioService.get(id).orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
+
+		model.addAttribute("servicio", servicio);
+		model.addAttribute("sesion", session.getAttribute("idUsuario"));
+		return "usuario/servicioHome";
+	}
+
 	@PostMapping("/cart")
-	public String addCart(@RequestParam Integer id, @RequestParam Double cantidad, Model model) {
-		DetalleOrden detaorden = new DetalleOrden();
-		Producto p = new Producto();
-		// variable que siempre que este en el metodo inicializa en cero despues de cada
-		// compra
-		double sumaTotal = 0;
-		Optional<Producto> op = productoService.get(id);
-		LOGGER.info("Producto añadido: {}", op.get());
-		LOGGER.info("Cantidad añadida: {}", cantidad);
-		p = op.get();
-		detaorden.setCantidad(cantidad);
-		detaorden.setPrecio(p.getPrecio());
-		detaorden.setNombre(p.getNombreproducto());
-		detaorden.setTotal(p.getPrecio() * cantidad);
-		detaorden.setProducto(p);
-		// validacion para evitar duplicados de productos
-		Integer idProducto = p.getId();
-		// funcion lamda stream y funcion anonima con predicado anyMatch
-		boolean insertado = detalles.stream().anyMatch(prod -> prod.getProducto().getId() == idProducto);
-		// si no es true añade el producto
-		if (!insertado) {
-			// detalles
-			detalles.add(detaorden);
+	public String addCart(@RequestParam Integer id, @RequestParam Double cantidad, Model model, HttpSession session) {
+
+		if (session.getAttribute("idUsuario") == null) {
+			return "redirect:/usuario/login";
 		}
 
-		// suma de totales de la lsita que el usuario añada al carrito
-		// funcion de java 8 lamda stream
-		// funcion de java 8 anonima dt
-		sumaTotal = detalles.stream().mapToDouble(dt -> dt.getTotal()).sum();
-		// pasar variables a la vista
+		Producto producto = productoService.get(id).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+		// Evitar duplicados
+		boolean productoExistente = detalles.stream().anyMatch(d -> d.getProducto().getId().equals(id));
+
+		if (!productoExistente) {
+			DetalleOrden detalle = new DetalleOrden();
+			detalle.setCantidad(cantidad);
+			detalle.setPrecio(producto.getPrecio());
+			detalle.setNombre(producto.getNombreproducto());
+			detalle.setTotal(producto.getPrecio() * cantidad);
+			detalle.setProducto(producto);
+			detalles.add(detalle);
+		}
+
+		double sumaTotal = detalles.stream().mapToDouble(DetalleOrden::getTotal).sum();
+
 		orden.setTotal(sumaTotal);
 		model.addAttribute("cart", detalles);
 		model.addAttribute("orden", orden);
+		model.addAttribute("sesion", session.getAttribute("idUsuario"));
+
 		return "usuario/carrito";
 	}
 
-	// METODO PARA QUITAR PRODUCTOS DEL CARRITO
 	@GetMapping("/delete/cart/{id}")
-	public String deleteProductoCart(@PathVariable Integer id, Model model) {
-		// lista nueva de productos
-		List<DetalleOrden> ordenesNuevas = new ArrayList<DetalleOrden>();
-		// Quitar objeto de la lista de detalleOrden
-		for (DetalleOrden detalleOrden : detalles) {
-			if (detalleOrden.getProducto().getId() != id) {
-				ordenesNuevas.add(detalleOrden);
-			}
-		}
-		// poner la nueva lista con los productos restantes del carrito
-		detalles = ordenesNuevas;
-		// recalcular los productos del carrito
-		double sumaTotal = 0;
-		sumaTotal = detalles.stream().mapToDouble(dt -> dt.getTotal()).sum();
-		// pasar variables a la vista
+	public String deleteProductoCart(@PathVariable Integer id, Model model, HttpSession session) {
+		detalles.removeIf(d -> d.getProducto().getId().equals(id));
+
+		double sumaTotal = detalles.stream().mapToDouble(DetalleOrden::getTotal).sum();
+
 		orden.setTotal(sumaTotal);
 		model.addAttribute("cart", detalles);
 		model.addAttribute("orden", orden);
-		return "usuario/carrito";
+		model.addAttribute("sesion", session.getAttribute("idUsuario"));
 
+		return "usuario/carrito";
 	}
 
-	// metodo para redirigir al carrito sin productos
-	public String getCart(Model model) {
+	@GetMapping("/getCart")
+	public String getCart(Model model, HttpSession session) {
 		model.addAttribute("cart", detalles);
 		model.addAttribute("orden", orden);
+		model.addAttribute("sesion", session.getAttribute("idUsuario"));
 		return "usuario/carrito";
 	}
 
+	@GetMapping("/order")
+	public String order(Model model, HttpSession session) {
+		if (session.getAttribute("idUsuario") == null) {
+			return "redirect:/usuario/login";
+		}
+
+		Usuario usuario = usuarioService.findById(Integer.parseInt(session.getAttribute("idUsuario").toString()))
+				.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+		model.addAttribute("cart", detalles);
+		model.addAttribute("orden", orden);
+		model.addAttribute("usuario", usuario);
+		model.addAttribute("sesion", session.getAttribute("idUsuario"));
+
+		return "usuario/resumenorden";
+	}
+
+	@GetMapping("/saveOrder")
+	public String saveOrder(HttpSession session) {
+		if (session.getAttribute("idUsuario") == null) {
+			return "redirect:/usuario/login";
+		}
+
+		Usuario usuario = usuarioService.findById(Integer.parseInt(session.getAttribute("idUsuario").toString()))
+				.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+		orden.setFechacreacion(new Date());
+		orden.setNumero(ordenService.generarNumeroOrden());
+		orden.setUsuario(usuario);
+		orden.setEstado("PENDIENTE");
+
+		Orden ordenGuardada = ordenService.save(orden);
+
+		detalles.forEach(dt -> {
+			dt.setOrden(ordenGuardada);
+			detalleOrdenService.save(dt);
+		});
+
+		// Limpiar carrito
+		orden = new Orden();
+		detalles.clear();
+
+		return "redirect:/usuario/compras/" + ordenGuardada.getId();
+	}
+
+	@PostMapping("/searchU")
+	public String searchProducto(@RequestParam String nombreproducto, Model model) {
+		List<Producto> productos = productoService.findAll().stream()
+				.filter(p -> p.getNombreproducto().toUpperCase().contains(nombreproducto.toUpperCase()))
+				.collect(Collectors.toList());
+
+		model.addAttribute("productos", productos);
+		return "usuario/productosVista";
+	}
+
+	@GetMapping("/pagar/{id}")
+	public String procesarPago(@PathVariable Integer id, Model model, HttpSession session) {
+		try {
+			Orden orden = ordenService.findById(id).orElseThrow(() -> new RuntimeException("Orden no encontrada"));
+
+			session.setAttribute("ordenId", orden.getId());
+			String paymentUrl = mercadoPagoService.createPreference(orden);
+			return "redirect:" + paymentUrl;
+
+		} catch (MPException | MPApiException e) {
+			model.addAttribute("error", "Error al procesar el pago: " + e.getMessage());
+			return "usuario/error";
+		}
+	}
+
+	@GetMapping("/success")
+	public String pagoExitoso(@RequestParam String payment_id, @RequestParam String status,
+			@RequestParam String merchant_order_id, HttpSession session, Model model) {
+
+		Integer idOrden = (Integer) session.getAttribute("ordenId");
+		if (idOrden != null) {
+			ordenService.findById(idOrden).ifPresent(orden -> {
+				orden.setEstado("PAGADO");
+				ordenService.update(orden);
+				model.addAttribute("orden", orden);
+			});
+		}
+
+		return "pagos/pago_exitoso";
+	}
+
+	@GetMapping("/failure")
+	public String pagoFallido(HttpSession session, Model model) {
+		Integer idOrden = (Integer) session.getAttribute("ordenId");
+		if (idOrden != null) {
+			ordenService.findById(idOrden).ifPresent(orden -> {
+				orden.setEstado("RECHAZADO");
+				ordenService.update(orden);
+				model.addAttribute("orden", orden);
+			});
+		}
+
+		return "pagos/pago_fallido";
+	}
+
+	@GetMapping("/pending")
+	public String pagoPendiente(HttpSession session, Model model) {
+		Integer idOrden = (Integer) session.getAttribute("ordenId");
+		if (idOrden != null) {
+			ordenService.findById(idOrden).ifPresent(orden -> {
+				orden.setEstado("PENDIENTE");
+				ordenService.update(orden);
+				model.addAttribute("orden", orden);
+			});
+		}
+
+		return "pagos/pago_pendiente";
+	}
 }

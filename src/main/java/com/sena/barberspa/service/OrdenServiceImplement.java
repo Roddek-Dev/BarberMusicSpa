@@ -12,9 +12,8 @@ import com.sena.barberspa.model.Usuario;
 import com.sena.barberspa.repository.IOrdenRepository;
 
 @Service
-public class OrdenServiceImplement implements IOrdenService{
-	
-	
+public class OrdenServiceImplement implements IOrdenService {
+
 	@Autowired
 	private IOrdenRepository ordenRepository;
 
@@ -22,6 +21,16 @@ public class OrdenServiceImplement implements IOrdenService{
 	public Orden save(Orden orden) {
 		// TODO Auto-generated method stub
 		return ordenRepository.save(orden);
+	}
+
+	@Override
+	public Orden update(Orden orden) {
+		// Verify if the orden exists
+		Optional<Orden> existingOrden = ordenRepository.findById(orden.getId());
+		if (existingOrden.isPresent()) {
+			return ordenRepository.save(orden); // JPA's save performs update when ID exists
+		}
+		return null; // or throw an exception
 	}
 
 	@Override
@@ -40,7 +49,6 @@ public class OrdenServiceImplement implements IOrdenService{
 		List<Orden> ordenes = findAll();
 
 		List<Integer> numeros = new ArrayList<Integer>();
-
 
 		// funciones java 8
 		// una variable anonima

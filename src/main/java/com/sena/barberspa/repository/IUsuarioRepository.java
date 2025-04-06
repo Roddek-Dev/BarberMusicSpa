@@ -10,7 +10,4 @@ import com.sena.barberspa.model.Usuario;
 @Repository
 public interface IUsuarioRepository extends JpaRepository<Usuario, Integer> {
 	Optional<Usuario> findByEmail(String email);
-
-	Optional<Usuario> findByUsername(String username);
-
 }

@@ -9,6 +9,8 @@ import com.sena.barberspa.model.Usuario;
 public interface IOrdenService {
 
 	public Orden save(Orden orden);
+	
+    public Orden update(Orden orden);  // New update method
 
 	public List<Orden> findAll();
 
